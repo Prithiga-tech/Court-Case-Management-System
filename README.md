@@ -34,13 +34,19 @@ The system simulates a court case dashboard that can display total, pending, and
 - Code::Blocks (for other project modules)
 - Windows Command Prompt
 
-##  Screenshots
+## 📷 Screenshots
 
 ### 🔐 Login Page
-![Login Page](screenshots/login-page.png)
+![Login Page](screenshots/login-page.jpg)
 
-### 📊 Dashboard
-![Dashboard](screenshots/dashboard.png)
+### ⚖️ Judge Dashboard
+![Judge Dashboard](screenshots/judge-dashboard.jpg)
+
+### 👨‍💼 Lawyer Dashboard
+![Lawyer Dashboard](screenshots/lawyer-dashboard.jpg)
+
+### 👤 Client Dashboard
+![Client Dashboard](screenshots/client-dashboard.jpg)
 
 ## 👥 Team
 
