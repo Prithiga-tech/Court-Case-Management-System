@@ -1,0 +1,401 @@
+// Sample data for demonstration
+const sampleCases = [
+    {
+        id: "C2023001",
+        title: "State vs. Rahul Verma",
+        type: "criminal",
+        status: "hearing",
+        client: "Rahul Verma",
+        aadhar: "123456789012",
+        mobile: "9876543210",
+        dob: "1990-05-15",
+        gender: "male",
+        description: "Theft case under IPC section 379",
+        registeredDate: "2023-01-10",
+        nextHearing: "2023-06-20 10:30",
+        lawyer: "Advocate Priya Sharma",
+        judge: "Justice Rajesh Kumar",
+        police: "Inspector Vikram Singh",
+        updates: [
+            {
+                date: "2023-01-15",
+                by: "Inspector Vikram Singh",
+                status: "Under Investigation",
+                details: "Initial investigation started, evidence collected"
+            },
+            {
+                date: "2023-03-10",
+                by: "Justice Rajesh Kumar",
+                status: "First Hearing",
+                details: "Bail granted, next hearing scheduled"
+            }
+        ]
+    },
+    {
+        id: "C2023002",
+        title: "Sharma vs. Gupta Property Dispute",
+        type: "property",
+        status: "investigation",
+        client: "Rajesh Sharma",
+        aadhar: "987654321098",
+        mobile: "8765432109",
+        dob: "1975-11-22",
+        gender: "male",
+        description: "Property dispute over ancestral land",
+        registeredDate: "2023-02-05",
+        nextHearing: "",
+        lawyer: "Advocate Amit Patel",
+        judge: "Justice Anjali Desai",
+        police: "Sub-Inspector Ramesh Kumar",
+        updates: [
+            {
+                date: "2023-02-10",
+                by: "Sub-Inspector Ramesh Kumar",
+                status: "Under Investigation",
+                details: "Site inspection completed, documents being verified"
+            }
+        ]
+    }
+];
+
+// DOM Elements
+const pages = {
+    home: document.getElementById('homePage'),
+    login: document.getElementById('loginPage'),
+    register: document.getElementById('registerPage'),
+    judge: document.getElementById('judgePage'),
+    police: document.getElementById('policePage'),
+    lawyer: document.getElementById('lawyerPage'),
+    client: document.getElementById('clientPage')
+};
+
+const navLinks = {
+    home: document.getElementById('homeLink'),
+    login: document.getElementById('loginLink'),
+    register: document.getElementById('registerLink')
+};
+
+const logoutButtons = {
+    judge: document.getElementById('judgeLogout'),
+    police: document.getElementById('policeLogout'),
+    lawyer: document.getElementById('lawyerLogout'),
+    client: document.getElementById('clientLogout')
+};
+
+// Current user
+let currentUser = null;
+
+// Initialize the application
+function init() {
+    // Set event listeners
+    navLinks.home.addEventListener('click', () => showPage('home'));
+    navLinks.login.addEventListener('click', () => showPage('login'));
+    navLinks.register.addEventListener('click', () => showPage('register'));
+    
+    // Logout buttons
+    logoutButtons.judge.addEventListener('click', logout);
+    logoutButtons.police.addEventListener('click', logout);
+    logoutButtons.lawyer.addEventListener('click', logout);
+    logoutButtons.client.addEventListener('click', logout);
+    
+    // Form submissions
+    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    document.getElementById('caseForm').addEventListener('submit', registerCase);
+    document.getElementById('hearingForm').addEventListener('submit', scheduleHearing);
+    document.getElementById('policeUpdateForm').addEventListener('submit', updateCaseStatus);
+    document.getElementById('clientCaseSearch').addEventListener('submit', checkCaseStatus);
+    
+    // Show home page by default
+    showPage('home');
+}
+
+// Show a specific page and hide others
+function showPage(pageName) {
+    // Hide all pages
+    Object.values(pages).forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // Show the requested page
+    pages[pageName].classList.add('active');
+    
+    // If showing a dashboard page, populate the data
+    if (pageName === 'judge') {
+        populateJudgeCases();
+    } else if (pageName === 'police') {
+        populatePoliceCases();
+    } else if (pageName === 'lawyer') {
+        populateLawyerCases();
+    }
+}
+
+// Handle login form submission
+function handleLogin(e) {
+    e.preventDefault();
+    
+    const userType = document.getElementById('userType').value;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    // Simple validation - username and password must be same
+    if (username !== password) {
+        alert('Username and password must be the same for this demo');
+        return;
+    }
+    
+    // Set current user based on type
+    currentUser = {
+        type: userType,
+        name: username
+    };
+    
+    // Show the appropriate dashboard
+    if (userType === 'judge') {
+        document.getElementById('judgeName').textContent = `Justice ${username}`;
+        showPage('judge');
+    } else if (userType === 'police') {
+        document.getElementById('policeName').textContent = `Inspector ${username}`;
+        showPage('police');
+    } else if (userType === 'lawyer') {
+        document.getElementById('lawyerName').textContent = `Advocate ${username}`;
+        showPage('lawyer');
+    } else if (userType === 'client') {
+        // For client, find their name from cases
+        const clientCase = sampleCases.find(c => c.client.toLowerCase().includes(username.toLowerCase()));
+        if (clientCase) {
+            document.getElementById('clientNameDisplay').textContent = clientCase.client;
+            showPage('client');
+        } else {
+            alert('No cases found for this client. Please register a case first.');
+        }
+    }
+    
+    // Reset login form
+    e.target.reset();
+}
+
+// Handle case registration
+function registerCase(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const caseType = document.getElementById('caseType').value;
+    const caseTitle = document.getElementById('caseTitle').value;
+    const caseDescription = document.getElementById('caseDescription').value;
+    const clientName = document.getElementById('clientName').value;
+    const clientAadhar = document.getElementById('clientAadhar').value;
+    const clientMobile = document.getElementById('clientMobile').value;
+    const clientDob = document.getElementById('clientDob').value;
+    const clientGender = document.getElementById('clientGender').value;
+    
+    // Create new case (in a real app, this would be sent to a server)
+    const newCase = {
+        id: `C${new Date().getFullYear()}${Math.floor(1000 + Math.random() * 9000)}`,
+        title: caseTitle,
+        type: caseType,
+        status: "registered",
+        client: clientName,
+        aadhar: clientAadhar,
+        mobile: clientMobile,
+        dob: clientDob,
+        gender: clientGender,
+        description: caseDescription,
+        registeredDate: new Date().toISOString().split('T')[0],
+        nextHearing: "",
+        lawyer: "",
+        judge: "",
+        police: "",
+        updates: [
+            {
+                date: new Date().toISOString().split('T')[0],
+                by: clientName,
+                status: "Case Registered",
+                details: "Case registered by client"
+            }
+        ]
+    };
+    
+    // Add to sample cases (in a real app, this would be a database)
+    sampleCases.push(newCase);
+    
+    alert(`Case registered successfully! Your Case ID is ${newCase.id}`);
+    e.target.reset();
+    showPage('home');
+}
+
+// Populate judge's case table
+function populateJudgeCases() {
+    const tableBody = document.querySelector('#judgeCaseTable tbody');
+    tableBody.innerHTML = '';
+    
+    sampleCases.forEach(caseItem => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${caseItem.id}</td>
+            <td>${caseItem.title}</td>
+            <td>${caseItem.type}</td>
+            <td>${caseItem.status}</td>
+            <td>${caseItem.nextHearing || 'Not scheduled'}</td>
+            <td>
+                <button class="btn" onclick="viewCaseDetails('${caseItem.id}')">View</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Populate police case table
+function populatePoliceCases() {
+    const tableBody = document.querySelector('#policeCaseTable tbody');
+    tableBody.innerHTML = '';
+    
+    sampleCases.forEach(caseItem => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${caseItem.id}</td>
+            <td>${caseItem.title}</td>
+            <td>${caseItem.type}</td>
+            <td>${caseItem.status}</td>
+            <td>${caseItem.registeredDate}</td>
+            <td>
+                <button class="btn" onclick="viewCaseDetails('${caseItem.id}')">View</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Populate lawyer's case table
+function populateLawyerCases() {
+    const tableBody = document.querySelector('#lawyerCaseTable tbody');
+    tableBody.innerHTML = '';
+    
+    // Filter cases assigned to this lawyer (in a real app, this would be based on actual assignments)
+    const lawyerCases = sampleCases.filter(c => c.lawyer.includes(currentUser.name) || c.lawyer === '');
+    
+    lawyerCases.forEach(caseItem => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${caseItem.id}</td>
+            <td>${caseItem.title}</td>
+            <td>${caseItem.client}</td>
+            <td>${caseItem.nextHearing || 'Not scheduled'}</td>
+            <td>${caseItem.status}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Schedule a hearing
+function scheduleHearing(e) {
+    e.preventDefault();
+    
+    const caseId = document.getElementById('hearingCaseId').value;
+    const hearingDate = document.getElementById('hearingDate').value;
+    const hearingTime = document.getElementById('hearingTime').value;
+    
+    // Find the case
+    const caseItem = sampleCases.find(c => c.id === caseId);
+    if (caseItem) {
+        caseItem.nextHearing = `${hearingDate} ${hearingTime}`;
+        caseItem.status = 'hearing';
+        caseItem.updates.push({
+            date: new Date().toISOString().split('T')[0],
+            by: currentUser.name,
+            status: "Hearing Scheduled",
+            details: `Hearing scheduled for ${hearingDate} at ${hearingTime}`
+        });
+        
+        alert(`Hearing scheduled for case ${caseId}`);
+        e.target.reset();
+        populateJudgeCases();
+    } else {
+        alert('Case not found');
+    }
+}
+
+// Update case status (police)
+function updateCaseStatus(e) {
+    e.preventDefault();
+    
+    const caseId = document.getElementById('policeCaseId').value;
+    const status = document.getElementById('caseStatus').value;
+    const updateDetails = document.getElementById('caseUpdate').value;
+    
+    // Find the case
+    const caseItem = sampleCases.find(c => c.id === caseId);
+    if (caseItem) {
+        caseItem.status = status;
+        caseItem.updates.push({
+            date: new Date().toISOString().split('T')[0],
+            by: currentUser.name,
+            status: status === 'investigation' ? 'Under Investigation' : 
+                   status === 'chargesheet' ? 'Chargesheet Filed' : 'Case Closed',
+            details: updateDetails
+        });
+        
+        alert(`Case ${caseId} status updated`);
+        e.target.reset();
+        populatePoliceCases();
+    } else {
+        alert('Case not found');
+    }
+}
+
+// Check case status (client)
+function checkCaseStatus(e) {
+    e.preventDefault();
+    
+    const caseId = document.getElementById('clientCaseId').value;
+    const caseItem = sampleCases.find(c => c.id === caseId);
+    
+    const resultDiv = document.getElementById('caseStatusResult');
+    if (caseItem) {
+        let html = `
+            <h4>${caseItem.title}</h4>
+            <p><strong>Status:</strong> ${caseItem.status}</p>
+            <p><strong>Type:</strong> ${caseItem.type}</p>
+        `;
+        
+        if (caseItem.nextHearing) {
+            html += `<p><strong>Next Hearing:</strong> ${caseItem.nextHearing}</p>`;
+        }
+        
+        if (caseItem.lawyer) {
+            html += `<p><strong>Lawyer:</strong> ${caseItem.lawyer}</p>`;
+        }
+        
+        // Show updates
+        html += `<h5>Case Updates:</h5><ul>`;
+        caseItem.updates.forEach(update => {
+            html += `
+                <li>
+                    <strong>${update.date}</strong> - ${update.status}<br>
+                    ${update.details}
+                </li>
+            `;
+        });
+        html += `</ul>`;
+        
+        resultDiv.innerHTML = html;
+    } else {
+        resultDiv.innerHTML = `<p class="error">Case not found. Please check the Case ID.</p>`;
+    }
+}
+
+// View case details (common function)
+function viewCaseDetails(caseId) {
+    const caseItem = sampleCases.find(c => c.id === caseId);
+    if (caseItem) {
+        alert(`Case Details:\n\nID: ${caseItem.id}\nTitle: ${caseItem.title}\nType: ${caseItem.type}\nStatus: ${caseItem.status}\nClient: ${caseItem.client}\nDescription: ${caseItem.description}`);
+    }
+}
+
+// Logout
+function logout() {
+    currentUser = null;
+    showPage('home');
+}
+
+// Initialize the app when DOM is loaded
+document.addEventListener('DOMContentLoaded', init);
