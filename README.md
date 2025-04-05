@@ -40,10 +40,10 @@ The system simulates a court case dashboard that can display total, pending, and
 ![Login Page](login-page.jpg)
 
 ### ⚖️ Judge Dashboard
-![Judge Dashboard](lawyer-dashboard.jpg)
+![Judge Dashboard](judge-dashboard.jpg)
 
 ### 👨‍💼 Lawyer Dashboard
-![Lawyer Dashboard](screenshots/lawyer-dashboard.jpg)
+![Lawyer Dashboard](lawyer-dashboard.jpg)
 
 ### 👤 Client Dashboard
 ![Client Dashboard](client-dashboard.jpg)
