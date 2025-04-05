@@ -46,7 +46,7 @@ The system simulates a court case dashboard that can display total, pending, and
 ![Lawyer Dashboard](screenshots/lawyer-dashboard.jpg)
 
 ### 👤 Client Dashboard
-![Client Dashboard](screenshots/client-dashboard.jpg)
+![Client Dashboard](client-dashboard.jpg)
 
 ## 👥 Team
 
