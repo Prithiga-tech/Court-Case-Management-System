@@ -37,7 +37,7 @@ The system simulates a court case dashboard that can display total, pending, and
 ## 📷 Screenshots
 
 ### 🔐 Login Page
-![Login Page](screenshots/login-page.jpg)
+![Login Page](login-page.jpg)
 
 ### ⚖️ Judge Dashboard
 ![Judge Dashboard](lawyer-dashboard.jpg)
